@@ -49,18 +49,16 @@ void* producer(void* arg){
   ThreadInfo* info = (ThreadInfo*)arg;
 
 	int i = 0;
-  char *msg[] ={"Hello","Bonjour","Ni Hao"};
 	for (;i < 3;i++)
 	{
 	 		pthread_mutex_lock(&threadLock);
-      printf("Updating\r\n");
-      info->c = msg[i];
+      printf("Enter in String: ");
+      char a[100];
+      fgets(a,100,stdin);
+      info->c = a;
       info->i = i;
       info->d++;
 	    pthread_cond_wait(&condition_mutex,&threadLock);
-	 		pthread_mutex_unlock(&threadLock);
-
-      pthread_mutex_lock(&threadLock);
       pthread_cond_signal(&condition_mutex);
 			pthread_mutex_unlock(&threadLock);
 
@@ -75,11 +73,10 @@ void* consumer(void* arg){
 	for (;i < 3;i++)
 	{
 			pthread_mutex_lock(&threadLock);
+      
       pthread_cond_signal(&condition_mutex);
-			pthread_mutex_unlock(&threadLock);
+      printf("String:%sInt:%d\r\nDouble:%f\r\n", info->c,info->i,info->d);
 
-      pthread_mutex_lock(&threadLock);
-      printf("String:%s Int:%d Double:%f\r\n", info->c,info->i,info->d);
 	    pthread_cond_wait(&condition_mutex,&threadLock);
 	 		pthread_mutex_unlock(&threadLock);
 
